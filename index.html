@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Modern Calculator</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(to right, #d9e6f2, #f0f9ff);
+      --display-bg: #f6f9fc;
+      --btn-bg: #e0f1ff;
+      --btn-hover: #c2e4ff;
+      --accent: #4caf50;
+      --text-color: #333;
+      --btn-text-color: #333;
+      --btn-shadow: rgba(0, 0, 0, 0.1);
+      --display-shadow: rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--bg-gradient);
+      font-family: 'Arial', sans-serif;
+      color: var(--text-color);
+      flex-direction: column;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 36px;
+      color: var(--text-color);
+      text-shadow: 1px 1px 3px #ccc;
+    }
+
+    .calculator {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px var(--btn-shadow);
+      width: 380px;
+      border: 2px solid #e0f1ff;
+    }
+
+    #display {
+      width: calc(100% - 30px); /* Ensure it doesn't touch the edges */
+      height: 70px;
+      font-size: 30px;
+      text-align: right;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      background-color: var(--display-bg);
+      color: var(--text-color);
+      box-shadow: 0 4px 10px var(--display-shadow);
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    button {
+      padding: 20px;
+      font-size: 22px;
+      border: none;
+      border-radius: 12px;
+      background-color: var(--btn-bg);
+      color: var(--btn-text-color);
+      cursor: pointer;
+      transition: 0.2s ease-in-out;
+      box-shadow: 0 4px 10px var(--btn-shadow);
+    }
+
+    button:hover {
+      background-color: var(--btn-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    button:active {
+      transform: translateY(2px);
+      box-shadow: none;
+    }
+
+    .equal {
+      background-color: var(--accent);
+      color: #ffffff;
+      font-weight: bold;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .equal:hover {
+      background-color: #66bb6a;
+    }
+
+    .zero {
+      grid-column: span 2;
+    }
+
+    .clear {
+      background-color: #ff7043;
+      color: #ffffff;
+    }
+
+    .clear:hover {
+      background-color: #ff5722;
+    }
+  </style>
+</head>
+<body>
+  <h1>Modern Calculator</h1>
+  <div class="calculator">
+    <input type="text" id="display" readonly>
+    <div class="buttons">
+      <button class="clear" onclick="clearDisplay()">C</button>
+      <button onclick="appendToDisplay('/')">÷</button>
+      <button onclick="appendToDisplay('*')">×</button>
+      <button onclick="deleteLast()">←</button>
+
+      <button onclick="appendToDisplay('7')">7</button>
+      <button onclick="appendToDisplay('8')">8</button>
+      <button onclick="appendToDisplay('9')">9</button>
+      <button onclick="appendToDisplay('-')">−</button>
+
+      <button onclick="appendToDisplay('4')">4</button>
+      <button onclick="appendToDisplay('5')">5</button>
+      <button onclick="appendToDisplay('6')">6</button>
+      <button onclick="appendToDisplay('+')">+</button>
+
+      <button onclick="appendToDisplay('1')">1</button>
+      <button onclick="appendToDisplay('2')">2</button>
+      <button onclick="appendToDisplay('3')">3</button>
+      <button onclick="calculateResult()" class="equal">=</button>
+
+      <button onclick="appendToDisplay('0')" class="zero">0</button>
+      <button onclick="appendToDisplay('.')">.</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById("display");
+
+    function appendToDisplay(value) {
+      if (display.value === "Error") display.value = "";
+      display.value += value;
+    }
+
+    function clearDisplay() {
+      display.value = "";
+    }
+
+    function deleteLast() {
+      display.value = display.value.slice(0, -1);
+    }
+
+    function calculateResult() {
+      try {
+        const result = eval(display.value);
+        display.value = Number.isFinite(result) ? parseFloat(result.toFixed(10)) : "Error";
+      } catch (e) {
+        display.value = "Error";
+      }
+    }
+
+    // Keyboard support
+    document.addEventListener("keydown", (e) => {
+      const allowed = "0123456789+-*/.=BackspaceEntercC";
+      if (!allowed.includes(e.key)) return;
+
+      if (e.key === "Enter") return calculateResult();
+      if (e.key === "Backspace") return deleteLast();
+      if (e.key.toLowerCase() === "c") return clearDisplay();
+      if (e.key === "=") return calculateResult();
+
+      appendToDisplay(e.key);
+    });
+  </script>
+</body>
+</html>
